@@ -1,22 +1,82 @@
+before:
+  hooks:
+    - go mod tidy
+    - go generate ./...
+
 project_name: gocli
 
+release:
+  github:
+    owner: imjulianeral
+    name: gocli
+
 builds:
+  - id: gocli-darwin-amd64
+    ldflags:
+      - -s -w -X github.com/imjulianeral/gocli/pkg/version.Version={{.Version}}
   - binary: gocli
+    main: ./apps/gocli/main.go
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+    goarch:
+      - amd64
+
+  - id: gocli-darwin-arm64
+    ldflags:
+      - -s -w -X github.com/imjulianeral/gocli/pkg/version.Version={{.Version}}
+  - binary: gocli
+    main: ./apps/gocli/main.go
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+    goarch:
+      - arm64
+
+  - id: gocli-linux-amd64
+    ldflags:
+      - -s -w -X github.com/imjulianeral/gocli/pkg/version.Version={{.Version}}
+  - binary: gocli
+    main: ./apps/gocli/main.go
   - env:
       - CGO_ENABLED=0
     goos:
       - linux
-      - windows
-      - darwin
     goarch:
       - amd64
-      - arm64
 
-release:
-  prerelease: auto
+  - id: gocli-windows-amd64
+    ldflags:
+      - -s -w -X github.com/imjulianeral/gocli/pkg/version.Version={{.Version}}
+  - binary: gocli
+    main: ./apps/gocli/main.go
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+    goarch:
+      - amd64
+
+archives:
+  - replacements:
+      darwin: darwin
+      linux: linux
+      windows: windows
+      386: i386
+      amd64: amd64
 
 universal_binaries:
   - replace: true
 
 checksum:
-  name_template: 'checksums.txt'
+  name_template: '{{ .ProjectName }}checksums.txt'
+snapshot:
+  name_template: '{{ .Tag }}-next'
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'

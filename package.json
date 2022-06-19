@@ -5,12 +5,23 @@
   "scripts": {
     "start": "nx serve",
     "build": "nx build",
-    "test": "nx test"
+    "test": "nx test",
+    "postinstall": "node postinstall.js install",
+    "preuninstall": "node postinstall.js uninstall"
   },
-  "private": true,
+  "goBinary": {
+    "name": "gocli",
+    "path": "./bin"
+  },
+  "files": [
+    "dist",
+    "postinstall.js"
+  ],
+  "private": false,
   "dependencies": {
     "@nrwl/next": "14.3.6",
     "core-js": "^3.6.5",
+    "mkdirp": "^1.0.4",
     "next": "12.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
